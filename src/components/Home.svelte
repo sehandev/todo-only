@@ -33,7 +33,17 @@
     }
 </style>
 
-<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.3.0/firebase-ui-auth.css" />
+<section class="section">
+    <div class="container">
+        <h1 class="title">Hello World</h1>
+        <p class="subtitle">
+            My first website with
+            <strong>Bulma</strong>
+            !
+        </p>
+    </div>
+</section>
+
 <main>
 
     <!-- 1. 🔥 Firebase App -->
@@ -54,8 +64,7 @@
             <button on:click={() => auth.signOut()}>Sign Out</button>
 
             <div slot="signed-out">
-                <button on:click={() => changePage(2)}>Login</button>
-                <!-- <Login {changePage} {firebaseAppMain} /> -->
+                <button class="button is-primary is-outlined" on:click={() => changePage(2)}>Login</button>
 
                 <button on:click={() => auth.signInAnonymously()}>Sign In Anonymously</button>
             </div>
@@ -81,12 +90,7 @@
                 <!-- 4. 💬 Get all the comments in its subcollection -->
 
                 <h3>Comments</h3>
-                <Collection
-                    path={postRef.collection('comments')}
-                    query={(ref) => ref.orderBy('createdAt')}
-                    let:data={comments}
-                    let:ref={commentsRef}
-                    log>
+                <Collection path={postRef.collection('comments')} query={(ref) => ref.orderBy('createdAt')} let:data={comments} let:ref={commentsRef} log>
 
                     {#if !comments.length}No comments yet...{/if}
 

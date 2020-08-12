@@ -1,9 +1,8 @@
-import Router from "./Router.svelte"
+import App from "./Router.svelte"
 
-// const app = new App({
-new Router({
+const app = new App({
     target: document.body,
     // props: {},
 })
 
-// export default app
+export default app
