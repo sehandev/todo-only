@@ -1,5 +1,4 @@
 <script>
-    export let changePage
     export let firebaseAppMain
     import * as firebaseui from "firebaseui"
 
@@ -14,6 +13,7 @@
                 // or whether we leave that to developer to handle.
                 console.log("SUCCESS signInSuccessWithAuthResult")
                 console.log(authResult)
+                document.getElementById("login-button").style.display = "none"
                 return true
             },
             uiShown: function () {
@@ -47,8 +47,6 @@
     Your app may use that space for branding, controls and other customizations.-->
 
 <main>
-    <button on:click={() => changePage(0)}>Home</button>
-    <h1>Welcome to My Awesome App</h1>
     <div id="firebaseui-auth-container" />
     <div id="loader">Loading...</div>
 </main>

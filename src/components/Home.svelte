@@ -1,85 +1,66 @@
 <script>
-    export let changePage
-    export let firebaseAppMain
+    export let user
     import FirebaseApp from "../firebase/FirebaseApp.svelte"
     import User from "../firebase/User.svelte"
     import Doc from "../firebase/Doc.svelte"
     import Collection from "../firebase/Collection.svelte"
     import "firebase/firestore"
     import "firebase/auth"
+
+    let todo_text = ""
 </script>
 
-<section class="section">
-    <div class="container">
+<h1 class="title is-1">
+    <i class="fas fa-check" />
+    TODO LIST
+</h1>
 
-    <!-- 1. 🔥 Firebase App -->
-    <FirebaseApp firebase={firebaseAppMain}>
+<Doc path={`todo_list/${user.uid}`} let:ref={postRef} log>
 
-        <h1 class="title">💪🔥 Mode Activated</h1>
+    <span slot="loading">Loading post...</span>
 
-        <p>
-            <strong>Tip:</strong>
-            Open the browser console for development logging.
-        </p>
+    <span slot="fallback">
+        <button class="button" on:click={() => postRef.set({ createdAt: Date.now() })}>Create Document</button>
+    </span>
 
-        <!-- 2. 😀 Get the current user -->
-        <User let:user let:auth>
-            Howdy 😀! User
-            <em>{user.uid}</em>
+    <Collection path={postRef.collection('todo')} query={(ref) => ref.orderBy('createdAt')} let:data={todos} let:ref={todosRef} log>
 
-            <button on:click={() => auth.signOut()}>Sign Out</button>
-
-            <div slot="signed-out">
-                <button class="button is-primary is-outlined" on:click={() => changePage(2)}>Login</button>
-
-                <button on:click={() => auth.signInAnonymously()}>Sign In Anonymously</button>
+        <div class="field has-addons">
+            <div class="control">
+                <input class="input" type="text" placeholder="New TODO" bind:value={todo_text} />
             </div>
+            <div class="control">
+                <button
+                    class="button is-primary"
+                    on:click={() => {
+                        if (todo_text) {
+                            todosRef.add({ yn: false, text: todo_text, createdAt: Date.now() })
+                        }
+                        todo_text = ''
+                    }}>
+                    ADD
+                </button>
+            </div>
+        </div>
 
-            <hr />
+        <span slot="loading">Loading todos...</span>
 
-            <!-- 3. 📜 Get a Firestore document owned by a user -->
-            <Doc path={`posts/${user.uid}`} let:data={post} let:ref={postRef} log>
+        {#if !todos.length}No todos yet...{/if}
 
-                <h2>{post.title}</h2>
-
-                <p>
-                    Document created at
-                    <em>{new Date(post.createdAt).toLocaleString()}</em>
-                </p>
-
-                <span slot="loading">Loading post...</span>
-
-                <span slot="fallback">
-                    <button on:click={() => postRef.set({ title: '📜 I like Svelte', createdAt: Date.now() })}>Create Document</button>
+        {#each todos as todo}
+            <!-- <p>{todo.ref.id}</p> -->
+            <div class="block">
+                <span class="tag is-success is-large">
+                    <label class="checkbox" on:click={() => (todo.ref.yn = todo.yn)}>
+                        <input type="checkbox" bind:checked={todo.yn} />
+                        {todo.text}
+                    </label>
+                    <button class="delete is-small" on:click={() => todo.ref.delete()} />
                 </span>
+            </div>
+        {/each}
 
-                <!-- 4. 💬 Get all the comments in its subcollection -->
-
-                <h3>Comments</h3>
-                <Collection path={postRef.collection('comments')} query={(ref) => ref.orderBy('createdAt')} let:data={comments} let:ref={commentsRef} log>
-
-                    {#if !comments.length}No comments yet...{/if}
-
-                    {#each comments as comment}
-                        <p>
-                            ID:
-                            <em>{comment.ref.id}</em>
-                        </p>
-                        <p>
-                            {comment.text}
-                            <button on:click={() => comment.ref.delete()}>Delete</button>
-                        </p>
-                    {/each}
-
-                    <button on:click={() => commentsRef.add({ text: '💬 Me too!', createdAt: Date.now() })}>Add Comment</button>
-
-                    <span slot="loading">Loading comments...</span>
-
-                </Collection>
-            </Doc>
-        </User>
-    </FirebaseApp>
-    </div>
-</section>
+    </Collection>
+</Doc>
 
 <!-- Styles -->

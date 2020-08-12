@@ -1,6 +1,8 @@
 <script>
     import Home from "./components/Home.svelte"
     import Login from "./components/Login.svelte"
+    import FirebaseApp from "./firebase/FirebaseApp.svelte"
+    import User from "./firebase/User.svelte"
 
     const options = [
         { router: "", component: Home },
@@ -17,7 +19,6 @@
     import firebase from "firebase/app"
     let firebaseConfig = {
         apiKey: "AIzaSyCAqX9fElYHowq4QNXZSScE9BiMpTQ8VOo",
-        // authDomain: "todo-only.firebaseapp.com",
         authDomain: "todo-only.firebaseapp.com",
         databaseURL: "https://todo-only.firebaseio.com",
         projectId: "todo-only",
@@ -29,67 +30,73 @@
     firebase.initializeApp(firebaseConfig)
 </script>
 
+<style>
+    main {
+        font-family: "Noto Sans KR", sans-serif;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .unselectable {
+        -moz-user-select: none; /* These user-select properties are inheritable, used to prevent text selection */
+        -webkit-user-select: none;
+        -ms-user-select: none; /* From IE10 only */
+        user-select: none; /* Not valid CSS yet, as of July 2012 */
+        -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
+    }
+</style>
+
 <svelte:head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css" />
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.3.0/firebase-ui-auth.css" />
 
-    <script type="text/javascript" defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js">
 
     </script>
 </svelte:head>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="https://bulma.io">
-            <img alt="logo" src="https://bulma.io/images/bulma-logo.png" width="112" height="28" />
-        </a>
+<main>
+    <FirebaseApp {firebase}>
+        <User let:user let:auth>
 
-        <a href="#home" role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-        </a>
-    </div>
-
-    <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-            <a href="#home" class="navbar-item">Home</a>
-
-            <a href="#home" class="navbar-item">Documentation</a>
-
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a href="#home" class="navbar-link">More</a>
-
-                <div class="navbar-dropdown">
-                    <a href="#home" class="navbar-item">About</a>
-                    <a href="#home" class="navbar-item">Jobs</a>
-                    <a href="#home" class="navbar-item">Contact</a>
-                    <hr class="navbar-divider" />
-                    <a href="#home" class="navbar-item">Report an issue</a>
-                </div>
+            <div slot="signed-out">
+                <Login firebaseAppMain={firebase} />
             </div>
-        </div>
 
-        <div class="navbar-end">
-            <div class="navbar-item">
-                <div class="buttons">
-                    <a href="#home" class="button is-primary">
-                        <strong>Sign up</strong>
-                    </a>
-                    <a href="#home" class="button is-light">Log in</a>
+            <!-- Navbar -->
+            <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <div class="navbar-item unselectable">
+                            <i class="fas fa-check-double" />
+                            <h4 class="title is-4 px-2">Todo Only</h4>
+                        </div>
+
+                        <div class="navbar-item has-text-black unselectable">{user.email}</div>
+
+                        <a href="#login" class="navbar-item" on:click={() => auth.signOut()}>Logout</a>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</nav>
+            </nav>
 
-{#if selected.router === ''}
-    <Home {changePage} firebaseAppMain={firebase} />
-{:else if selected.router === 'home'}
-    <Home {changePage} firebaseAppMain={firebase} />
-{:else if selected.router === 'login'}
-    <Login {changePage} firebaseAppMain={firebase} />
-{/if}
-<!-- <svelte:component this={selected.component} {changePage} firebaseAppMain={firebase} /> -->
+            <section class="section">
+                <div class="container">
+
+                    <!-- Pages -->
+                    {#if selected.router === ''}
+                        <Home {user} />
+                    {:else if selected.router === 'home'}
+                        <Home {user} />
+                    {/if}
+                    <!-- <svelte:component this={selected.component} firebaseAppMain={firebase} /> -->
+
+                </div>
+            </section>
+        </User>
+    </FirebaseApp>
+</main>
