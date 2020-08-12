@@ -5,51 +5,17 @@
     import User from "../firebase/User.svelte"
     import Doc from "../firebase/Doc.svelte"
     import Collection from "../firebase/Collection.svelte"
-    import Login from "./Login.svelte"
     import "firebase/firestore"
     import "firebase/auth"
 </script>
 
-<style>
-    main {
-        text-align: center;
-        padding: 1em;
-        max-width: 240px;
-        margin: 0 auto;
-    }
-    h1,
-    em {
-        color: #ff3e00;
-    }
-    hr {
-        height: 1px;
-        border: none;
-        background: rgb(195, 195, 195);
-    }
-    @media (min-width: 640px) {
-        main {
-            max-width: none;
-        }
-    }
-</style>
-
 <section class="section">
     <div class="container">
-        <h1 class="title">Hello World</h1>
-        <p class="subtitle">
-            My first website with
-            <strong>Bulma</strong>
-            !
-        </p>
-    </div>
-</section>
-
-<main>
 
     <!-- 1. 🔥 Firebase App -->
     <FirebaseApp firebase={firebaseAppMain}>
 
-        <h1>💪🔥 Mode Activated</h1>
+        <h1 class="title">💪🔥 Mode Activated</h1>
 
         <p>
             <strong>Tip:</strong>
@@ -113,7 +79,7 @@
             </Doc>
         </User>
     </FirebaseApp>
-
-</main>
+    </div>
+</section>
 
 <!-- Styles -->

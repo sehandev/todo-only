@@ -8,7 +8,7 @@
 
     let uiConfig = {
         callbacks: {
-            signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+            signInSuccessWithAuthResult: function (authResult, _) {
                 // User successfully signed in.
                 // Return type determines whether we continue the redirect automatically
                 // or whether we leave that to developer to handle.
@@ -45,7 +45,6 @@
 
 <!-- The surrounding HTML is left untouched by FirebaseUI.
     Your app may use that space for branding, controls and other customizations.-->
-<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.3.0/firebase-ui-auth.css" />
 
 <main>
     <button on:click={() => changePage(0)}>Home</button>
